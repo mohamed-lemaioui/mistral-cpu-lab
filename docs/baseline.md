@@ -53,3 +53,7 @@ python -u scripts/ministral_instruct_baseline.py --data data/proxmox_validation.
 ```
 
 Use the same isolated resource controls as the earlier experiments, and allow sufficient runtime for the longer generation limit. Do not run both models concurrently.
+
+## Native prompt overhead audit
+
+A tokenizer-only audit of the inode-exhaustion scenario measured 80 input tokens for Base and 622 for Instruct (7.775 times as many). The native Instruct template automatically inserts a default system prompt covering assistant identity, date, tools, web access and multimodal capabilities. The text configuration dictionaries were identical. This is a plausible contributor to the observed end-to-end throughput difference, not proof of its cause. Prefill and decode times were not separately measured. The template includes a dynamic date; the measured count corresponds to 2026-11-25. A follow-up with a fixed, concise explicit system prompt and the native message delimiters is proposed to isolate the overhead on Instruct. This would be a distinct experimental configuration. The existing test protocol remains unchanged.

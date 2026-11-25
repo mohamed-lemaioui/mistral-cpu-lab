@@ -1,0 +1,4 @@
+[transformers] `tokenizer_class` is `LlamaTokenizerFast` but `tokenizer.json` is ByteLevel; loading `TokenizersBackend`. Set `tokenizer_class` to `TokenizersBackend` in `tokenizer_config.json`.
+Base PROMPT_TOKENS 80
+Instruct PROMPT_TOKENS 622
+CONFIG_DIFF {}
