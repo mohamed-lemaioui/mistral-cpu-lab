@@ -1,0 +1,6 @@
+# Install CPU PyTorch separately (see README).
+numpy==2.5.5
+transformers==5.24.1
+peft==0.22.0
+accelerate==1.16.0
+safetensors==0.8.0
