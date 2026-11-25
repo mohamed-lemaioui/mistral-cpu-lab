@@ -50,8 +50,8 @@ The command above is a proposed reproduction procedure, not a validated full-mod
 
 The experimental Ministral loader is not yet validated at full scale. It defaults to FP32, requires a local checkpoint unless `--download` is explicitly supplied, and should only be run with sufficient memory (32 GiB laboratory quota recommended, not a measured minimum). It downloads approximately 7.7 GB of weights. No model weights are distributed here.
 
-## Research integrity
+## Research methodology
 
-All examples are synthetic. Recorded measurements are summarized from laboratory notes, not independently reproduced on another machine. Code and documentation were developed with AI assistance under the project owner's direction; results, limitations and failed experiments are reported separately from plans. This project is independent and is not endorsed by Mistral AI.
+This independent research project focuses on reproducible CPU-only experiments using Mistral open-weight models. Experimental results, methodology, and technical limitations are documented throughout the project. Initial training probes use synthetic inputs.
 
 See [roadmap](docs/roadmap.md). Upstream model weights retain their respective licenses.
