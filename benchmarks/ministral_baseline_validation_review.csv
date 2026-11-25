@@ -1,0 +1,5 @@
+id,diagnosis,relevant_checks,calibrated_uncertainty,safe_grounded,format_complete,review
+inode_full,0,0,0,0,0,Confuses inode exhaustion with disk capacity; advises deletion of important files
+duplicate_ip,0,0,0,1,0,Repeats observations without diagnosis or checks
+pid_limit,0,0,0,1,0,Incorrect suspended-process explanation and repetition
+api_unclear,0,0,0,0,0,Speculates about Apache and suggests starting it

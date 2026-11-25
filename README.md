@@ -74,4 +74,4 @@ See [roadmap](docs/roadmap.md). Upstream model weights retain their respective l
 
 ## Domain diagnostic pilot
 
-A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. Baseline evaluation and domain training are pending.
+A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. The initial four-case validation baseline is complete; held-out test evaluation and domain training remain pending. See the [baseline report](docs/baseline.md).
