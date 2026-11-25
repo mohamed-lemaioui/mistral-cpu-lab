@@ -31,3 +31,14 @@ Use an isolated memory-limited environment. The first five scripts were rerun wi
 The intermediate experiments were originally executed as inline commands; these standalone versions reproduce the documented methods, not necessarily the exact original random tensors or timing conditions. All five reconstructed scripts completed successfully on the original hardware on 2026-11-25. Their captured result lines are in [rerun output](../benchmarks/ministral_reconstructed_20261125.txt). The original pretrained probe result lines are [here](../benchmarks/ministral_pretrained_20261125.txt). Historical CSVs remain unchanged. These files are selected output lines, not complete terminal transcripts. The earlier failed tests are described in the experimental report rather than presented as successful runs.
 
 The projection rerun used random weights and yielded 0.094434 s FP32 and 10.299881 s BF16. This supports the original hardware-specific observation, not a general BF16 performance claim. The miniature losses differ from the original runs; exact random-state reproduction was not established. The mmap test checks only the synthetic model, not complete pretrained logits equivalence.
+
+## Sequence-length runs
+
+The original probe now accepts --steps 1 or 3 (default 1). Run separately with a suitable 26 GiB service memory limit and 600 s timeout:
+
+```bash
+nice -n 10 timeout 600 python -u scripts/ministral_text_probe.py --dtype fp32 --tokens 128 --steps 3
+nice -n 10 timeout 600 python -u scripts/ministral_text_probe.py --dtype fp32 --tokens 256 --steps 3
+```
+
+Captured logs: [128 tokens](../benchmarks/ministral_context_128_20261125.txt), [256 tokens](../benchmarks/ministral_context_256_20261125.txt). The original 32-token log is preserved; the updated script emits STEP records instead of FORWARD.

@@ -21,3 +21,12 @@ Pinned official checkpoint, local cache, text-only FP32, 32 synthetic tokens, ba
 ## Reconstructed intermediate experiments
 
 All five standalone reconstructions passed on 2026-11-25. See the [reproduction guide](reproduction.md) for commands, provenance, separate rerun measurements and limitations. Historical measurements remain unchanged.
+
+## Sequence-length benchmark — 2026-11-25
+
+Same pinned text-only checkpoint, FP32, four threads, seed 42, batch 1, LoRA r=4 alpha=8 q/v, AdamW lr=1e-4. Three consecutive optimizer steps per length on repeated synthetic text, gradient reset before each step, separate process and fresh adapters per length. Temporary systemd unit: MemoryMax=26G, MemorySwapMax=0, CPUQuota=400%, Nice=10, RuntimeMaxSec=600.
+
+- 128 tokens: 35.236537393, 35.442291299, 31.965163089 s; mean 34.214663927 s; loss 1.009258389 -> 0.938229144; peak RSS 16212.0546875 MiB.
+- 256 tokens: 63.745864419, 63.597330880, 55.958487100 s; mean 61.100560800 s; loss 0.510246813 -> 0.473503590; peak RSS 16216.56640625 MiB.
+
+Both runs passed finite-gradient, adapter-update and frozen-embedding sample checks. The 256-token service MemoryPeak was sampled during its third step (16427474944 bytes); it is not a final cgroup peak. Complete cgroup peak measurements and independent repeated runs remain future work. The lower loss at longer lengths reflects different repeated input sequences, not superior domain knowledge. No adapter persisted. See CSV and captured output files in benchmarks/.

@@ -1,0 +1,10 @@
+[transformers] `tokenizer_class` is `LlamaTokenizerFast` but `tokenizer.json` is ByteLevel; loading `TokenizersBackend`. Set `tokenizer_class` to `TokenizersBackend` in `tokenizer_config.json`.
+SHARD model-00001-of-00002.safetensors
+SHARD model-00002-of-00002.safetensors
+LOADED 4.446387987998605 RSS_MIB 16216.56640625
+STEP {"step": 1, "seconds": 63.74586441900101, "forward_seconds": 32.494144795000466, "loss": 0.5102468132972717}
+STEP {"step": 2, "seconds": 63.5973308800003, "forward_seconds": 30.06406997600061, "loss": 0.49942997097969055}
+STEP {"step": 3, "seconds": 55.95848710000064, "forward_seconds": 27.7650161950005, "loss": 0.48720744252204895}
+ADAPTER_UPDATE_OK FROZEN_EMBEDDING_SAMPLE_OK
+LOSS_AFTER 0.47350358963012695
+MINISTRAL_PRETRAINED_STEP_OK {"dtype": "fp32", "tokens": 256, "steps": 3, "seconds": 61.10056079966731, "step_seconds": [63.74586441900101, 63.5973308800003, 55.95848710000064], "loss": 0.5102468132972717, "step_losses": [0.5102468132972717, 0.49942997097969055, 0.48720744252204895], "loss_after": 0.47350358963012695, "trainable": 1171456, "rss_mib": 16216.56640625}

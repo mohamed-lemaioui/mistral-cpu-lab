@@ -11,7 +11,7 @@ This independent personal research project explores whether useful domain-specif
 | Ministral 3B architecture and LoRA compatibility | Passed on miniature model |
 | Ministral text-only checkpoint mapping | Validated against index; synthetic loading tested |
 | Official Ministral checkpoint download | SHA-256 verified |
-| Pretrained Ministral text-only CPU LoRA | One optimizer step validated |
+| Pretrained Ministral text-only CPU LoRA | 32, 128 and 256 tokens validated |
 | Domain-specific evaluation | Planned |
 
 ## Ministral 3B: initial findings
@@ -32,6 +32,16 @@ A representative projection microbenchmark on legacy AVX-only CPUs measured 0.13
 ## First pretrained CPU LoRA result
 
 On the text-only 3.429B-parameter checkpoint, one FP32 LoRA optimizer step (32 tokens, batch 1, four threads, r=4, alpha=8) completed in 8.713 seconds. Peak process RSS was 15.84 GiB; loss decreased from 3.882768 to 3.808134. Adapter changes and a sampled frozen embedding were checked. This is a feasibility result, not a domain-quality evaluation. See [measurements](benchmarks/ministral_pretrained.csv).
+
+## Sequence-length benchmark
+
+| Tokens | Optimizer steps | Mean seconds/step | Peak process RSS (MiB) |
+|---:|---:|---:|---:|
+| 32 | 1 | 8.713 | 16216.36 |
+| 128 | 3 | 34.215 | 16212.05 |
+| 256 | 3 | 61.101 | 16216.57 |
+
+Each sequence length was tested in a separate process using the same pinned model, FP32, four threads, batch size 1 and LoRA configuration. The 32-token result is an earlier single-step probe. One run per length, repeated synthetic text, no held-out evaluation. Process RSS is not total container memory. See [per-step measurements](benchmarks/ministral_context.csv) and [experimental report](docs/experiments.md).
 
 ## Reproduce
 
@@ -54,7 +64,7 @@ nice -n 10 timeout 600 python -u scripts/ministral_text_probe.py --dtype fp32 --
 
 The 32-token FP32 probe was validated using the pinned checkpoint already cached locally. Use an isolated environment with an appropriate memory limit. Remove `--download` to require a populated local cache.
 
-The text-only loader and one FP32 optimizer step have been validated at full parameter scale. It defaults to FP32, requires a local checkpoint unless `--download` is explicitly supplied, and should only be run with sufficient memory (32 GiB laboratory quota recommended, not a measured minimum). It downloads approximately 7.7 GB of weights. No model weights are distributed here.
+The text-only loader and FP32 optimizer steps at 32, 128 and 256 tokens have been validated at full parameter scale. It defaults to FP32, requires a local checkpoint unless `--download` is explicitly supplied, and should only be run with sufficient memory (32 GiB laboratory quota recommended, not a measured minimum). It downloads approximately 7.7 GB of weights. No model weights are distributed here.
 
 ## Research methodology
 

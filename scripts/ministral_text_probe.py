@@ -1,4 +1,4 @@
-"""Pinned text-only BF16/FP32 loader and one-step CPU LoRA probe; no remote code."""
+"""Pinned text-only BF16/FP32 loader and CPU LoRA probe; no remote code."""
 import argparse
 import json
 import resource
@@ -22,6 +22,7 @@ def main():
     parser.add_argument('--dtype', choices=['fp32', 'bf16'], default='fp32')
     parser.add_argument('--download', action='store_true', help='Permit downloading pinned shards')
     parser.add_argument('--tokens', type=int, default=32, choices=[32, 128, 256])
+    parser.add_argument("--steps", type=int, choices=[1, 3], default=1)
     args = parser.parse_args()
     dtype = torch.float32 if args.dtype == 'fp32' else torch.bfloat16
     torch.set_num_threads(4)
@@ -77,14 +78,21 @@ def main():
     assert not frozen.requires_grad
     frozen_before = frozen.detach()[:8].clone()
     model.train()
-    t = time.perf_counter()
-    loss = model(input_ids=x, labels=x, use_cache=False).loss
-    print('FORWARD', loss.item(), time.perf_counter()-t, flush=True)
-    loss.backward()
-    assert torch.isfinite(loss).item()
-    assert all(p.grad is not None and torch.isfinite(p.grad).all().item() for p in trainable)
-    optimizer.step()
-    elapsed = time.perf_counter()-t
+    step_times = []
+    losses = []
+    for step in range(args.steps):
+        optimizer.zero_grad(set_to_none=True)
+        t = time.perf_counter()
+        loss = model(input_ids=x, labels=x, use_cache=False).loss
+        forward_seconds = time.perf_counter()-t
+        loss.backward()
+        assert torch.isfinite(loss).item()
+        assert all(p.grad is not None and torch.isfinite(p.grad).all().item() for p in trainable)
+        optimizer.step()
+        elapsed = time.perf_counter()-t
+        step_times.append(elapsed)
+        losses.append(loss.item())
+        print('STEP', json.dumps(dict(step=step+1, seconds=elapsed, forward_seconds=forward_seconds, loss=loss.item())), flush=True)
     assert any(not torch.equal(p.detach(), b) for p,b in zip(trainable,before))
     assert frozen.grad is None and torch.equal(frozen.detach()[:8], frozen_before)
     with torch.no_grad():
@@ -92,7 +100,7 @@ def main():
     assert torch.isfinite(torch.tensor(after)).item()
     print('ADAPTER_UPDATE_OK', 'FROZEN_EMBEDDING_SAMPLE_OK', flush=True)
     print('LOSS_AFTER', after, flush=True)
-    print('MINISTRAL_PRETRAINED_STEP_OK', json.dumps({'dtype':args.dtype,'tokens':args.tokens,'seconds':elapsed,'loss':loss.item(),'loss_after':after,'trainable':sum(p.numel() for p in trainable),'rss_mib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024}),flush=True)
+    print('MINISTRAL_PRETRAINED_STEP_OK', json.dumps({'dtype':args.dtype,'tokens':args.tokens,'steps':args.steps,'seconds':sum(step_times)/len(step_times),'step_seconds':step_times,'loss':losses[0],'step_losses':losses,'loss_after':after,'trainable':sum(p.numel() for p in trainable),'rss_mib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024}),flush=True)
 
 if __name__ == '__main__':
     main()
