@@ -2,13 +2,7 @@
 
 ## Hardware and software
 
-Legacy dual Intel Xeon E5-2620, 12 physical cores / 24 hardware threads, AVX without AVX2 or FMA, no AI accelerator. Linux container with 8 vCPUs and initially 16 GiB memory, later increased to 32 GiB for planned Ministral tests. All reported training benchmarks use four threads. Python 3.13.5, PyTorch 2.15.0+cpu, Transformers 5.24.1, PEFT 0.22.0, Accelerate 1.16.0, Safetensors 0.8.0, NumPy 2.5.5.
-
-## Qwen3 baseline
-
-A randomly initialized miniature Qwen3 model (84,096 total parameters, 1,792 trainable) completed 20 LoRA optimizer steps in 0.346 s; loss fell from 4.10765 to 3.32689. A sampled frozen parameter remained unchanged, adapters changed, and reloaded logits matched within tolerance.
-
-Pretrained Qwen/Qwen3-0.6B: 596,623,360 parameters including 573,440 trainable; LoRA r=4, alpha=8, q_proj/v_proj, AdamW learning rate 1e-4, FP32. Observed checkpoint revision c1899de289a04d12100db370d81485cdf75e47ca. The first 29-token run did not explicitly pin the revision. The later 128/256-token runs did. Each run repeated one synthetic sequence three times. Timings and losses are in the CSV. Losses across different sequences are not directly comparable. RSS is process peak, not container-wide memory.
+Legacy dual Intel Xeon E5-2620, 12 physical cores / 24 hardware threads, AVX without AVX2 or FMA, no AI accelerator. Linux container with 8 vCPUs and initially 16 GiB memory, later increased to 32 GiB for planned Ministral tests. The reported Ministral probes use four threads. Python 3.13.5, PyTorch 2.15.0+cpu, Transformers 5.24.1, PEFT 0.22.0, Accelerate 1.16.0, Safetensors 0.8.0, NumPy 2.5.5.
 
 ## Ministral feasibility
 

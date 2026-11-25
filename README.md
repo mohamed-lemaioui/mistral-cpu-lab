@@ -8,25 +8,26 @@ This independent personal research project explores whether useful domain-specif
 
 | Experiment | Status |
 |---|---|
-| Qwen3 miniature LoRA and adapter reload | Passed |
-| Pretrained Qwen3 0.6B CPU LoRA | Passed |
 | Ministral 3B architecture and LoRA compatibility | Passed on miniature model |
 | Ministral text-only checkpoint mapping | Validated against index; synthetic loading tested |
 | Official Ministral checkpoint download | SHA-256 verified |
 | Full pretrained Ministral CPU LoRA | Not yet validated |
 | Domain-specific evaluation | Planned |
 
-## Baseline results
+## Ministral 3B: initial findings
 
-Four CPU threads, FP32, batch size 1, three optimizer steps per sequence length on Qwen3 0.6B. See [experimental report](docs/experiments.md) and [recorded measurements](benchmarks/qwen3.csv).
+Target: [Ministral-3-3B-Base-2512](https://huggingface.co/mistralai/Ministral-3-3B-Base-2512), pinned revision `6f9c4b12a95b139af68670a6713616b757923735`.
 
-| Tokens | Mean seconds/step | Peak process RSS (MiB) |
-|---:|---:|---:|
-| 29 | 1.91 | 4866.86 |
-| 128 | 7.984 | 4833.41 |
-| 256 | 14.195 | 4833.19 |
+| Finding | Result |
+|---|---:|
+| Stored multimodal BF16 parameters | 3,849,090,048 |
+| Unique text-only parameters | 3,429,006,336 |
+| Text-only FP32 weights | 12.77 GiB |
+| Text-only BF16 weights | 6.39 GiB |
+| Text tensor keys matched | 236 |
+| Planned LoRA trainable parameters (r=4, q/v projections) | 1,171,456 |
 
-These are short mechanism benchmarks, not evidence of domain competence or generalization.
+A representative projection microbenchmark on legacy AVX-only CPUs measured 0.133 s in FP32 versus 10.831 s in BF16 for forward and backward. This single trial without warm-up is not a full-model benchmark. See [experimental report](docs/experiments.md) and [recorded measurements](benchmarks/ministral_projection.csv).
 
 ## Reproduce
 
@@ -37,13 +38,15 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -r requirements.txt
-python scripts/lora_smoke.py
-python scripts/qwen_cpu_benchmark.py
-python scripts/qwen_context_benchmark.py 128
-python scripts/qwen_context_benchmark.py 256
 ```
 
-The first pretrained Qwen script downloads the model and does not pin its revision; the context benchmark requires the recorded pinned revision in the local cache. For exact reproduction, prefetch that revision independently.
+After checking available RAM and disk space, the experimental full-size probe can be attempted with:
+
+```bash
+nice -n 10 timeout 600 python -u scripts/ministral_text_probe.py --dtype fp32 --tokens 32 --download
+```
+
+The command above is a proposed reproduction procedure, not a validated full-model result. Use an isolated environment with an appropriate memory limit. Remove `--download` to require a populated local cache.
 
 The experimental Ministral loader is not yet validated at full scale. It defaults to FP32, requires a local checkpoint unless `--download` is explicitly supplied, and should only be run with sufficient memory (32 GiB laboratory quota recommended, not a measured minimum). It downloads approximately 7.7 GB of weights. No model weights are distributed here.
 
