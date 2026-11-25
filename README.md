@@ -35,6 +35,8 @@ On the text-only 3.429B-parameter checkpoint, one FP32 LoRA optimizer step (32 t
 
 ## Reproduce
 
+See the [complete reproduction guide](docs/reproduction.md) for all six executable scripts, their provenance, commands and captured results.
+
 Linux, Python 3.13.5 in the recorded environment. Install the CPU build of PyTorch first, then the recorded dependencies. Package availability depends on platform and release index.
 
 ```bash

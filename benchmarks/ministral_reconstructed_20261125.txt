@@ -1,0 +1,14 @@
+Reconstructed scripts: rerun on 2026-11-25, not original historical logs.
+=== ministral_preflight ===
+{"bf16_gib": 6.387022018432617, "fp32_gib": 12.774044036865234, "stored_bytes": 7698180096, "tensors": {"language_model": 236, "multi_modal_projector": 4, "vision_tower": 218}, "text_parameters": 3429006336, "trainable": 1171456, "vocab": 131072}
+=== ministral_tiny_lora ===
+{"dtype": "torch.float32", "loss": 5.577024459838867, "seconds": 0.0155241920001572, "finite_gradients": true}
+{"dtype": "torch.bfloat16", "loss": 5.577012062072754, "seconds": 0.016784311999799684, "finite_gradients": true}
+=== ministral_projection_benchmark ===
+{"dtype": "torch.float32", "seconds": 0.09443378099967958, "finite_input_gradient": true}
+{"dtype": "torch.bfloat16", "seconds": 10.299880647999089, "finite_input_gradient": true}
+=== ministral_verify_shards ===
+model-00001-of-00002.safetensors 0494c0a285767920a5e469af9710b499115667f84e17c225a956a5155459249f OK
+model-00002-of-00002.safetensors 3cd41d76f1d8e7b2fa64668d69177358dffdbd15231ccf6177798bca9de1a797 OK
+=== ministral_mmap_check ===
+MMAP_EQUIVALENCE_OK max_abs 0.0

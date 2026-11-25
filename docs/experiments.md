@@ -17,3 +17,7 @@ Both official checkpoint shards were downloaded and checked against published SH
 ## First pretrained Ministral LoRA step — 2026-11-25
 
 Pinned official checkpoint, local cache, text-only FP32, 32 synthetic tokens, batch 1, four threads, seed 42, LoRA r=4 alpha=8 on q_proj/v_proj, AdamW learning rate 1e-4. Model loading 4.17055033 s; forward 4.509849208 s; complete optimizer step 8.713357601 s; initial loss 3.882768154144287, post-update loss on the same sequence 3.808133602142334; peak process RSS 16216.359375 MiB. 1,171,456 trainable parameters. Finite gradients, adapter update and frozen embedding sample checks passed; process exit code 0. A temporary systemd unit enforced 26 GiB memory, no swap, CPU quota 400%, nice 10 and 600 s runtime limit. No container OOM events or swap use observed. One trial, no persisted adapter, no held-out evaluation. The 32 GiB container quota is not a measured minimum. Full checkpoint logits equivalence has not been tested.
+
+## Reconstructed intermediate experiments
+
+All five standalone reconstructions passed on 2026-11-25. See the [reproduction guide](reproduction.md) for commands, provenance, separate rerun measurements and limitations. Historical measurements remain unchanged.
