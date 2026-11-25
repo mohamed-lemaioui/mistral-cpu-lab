@@ -71,3 +71,7 @@ The text-only loader and FP32 optimizer steps at 32, 128 and 256 tokens have bee
 This independent research project focuses on reproducible CPU-only experiments using Mistral open-weight models. Experimental results, methodology, and technical limitations are documented throughout the project. Initial training probes use synthetic inputs.
 
 See [roadmap](docs/roadmap.md). Upstream model weights retain their respective licenses.
+
+## Domain diagnostic pilot
+
+A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. Baseline evaluation and domain training are pending.
