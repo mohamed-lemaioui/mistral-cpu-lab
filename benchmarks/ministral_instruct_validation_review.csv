@@ -1,0 +1,5 @@
+id,diagnosis,relevant_checks,calibrated_uncertainty,safe_grounded,format_complete,review
+inode_full,0,0,0,1,0,Mentions 100 percent inodes but does not complete causal diagnosis before cap
+duplicate_ip,0,0,0,1,0,Begins ARP explanation but no explicit duplicate-IP conclusion before cap
+pid_limit,1,0,0,1,0,Identifies maximum process limit reached but no checks before cap
+api_unclear,0,0,0,0,0,Suggests Apache or Nginx without establishing insufficient evidence or checking pveproxy
