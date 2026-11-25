@@ -25,6 +25,7 @@ def main():
     import sys
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", required=True, help="JSONL file with id and observations, or - for stdin")
+    parser.add_argument("--max-new-tokens", type=int, choices=[96, 256], default=96)
     args = parser.parse_args()
     rows = [json.loads(line) for line in (sys.stdin if args.data == "-" else Path(args.data).read_text().splitlines()) if line.strip()]
     assert rows and len({r["id"] for r in rows}) == len(rows)
@@ -76,13 +77,14 @@ def main():
         inputs = tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=True, add_generation_prompt=True, return_dict=True, return_tensors="pt")
         t = time.perf_counter()
         with torch.inference_mode():
-            output = base.generate(**inputs, do_sample=False, max_new_tokens=96, use_cache=True,
+            output = base.generate(**inputs, do_sample=False, max_new_tokens=args.max_new_tokens, use_cache=True,
                                    pad_token_id=tokenizer.eos_token_id)
         elapsed = time.perf_counter()-t
         new = output[0, inputs["input_ids"].shape[1]:]
         print("RESULT", json.dumps(dict(id=row["id"], prompt=prompt,
               answer=tokenizer.decode(new, skip_special_tokens=True),
-              generated_tokens=len(new), seconds=elapsed,
+              generated_tokens=len(new), max_new_tokens=args.max_new_tokens,
+              prompt_tokens=inputs["input_ids"].shape[1], reached_cap=len(new)==args.max_new_tokens, seconds=elapsed,
               rss_mib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024),
               ensure_ascii=False), flush=True)
     print("BASELINE_OK", len(rows), flush=True)

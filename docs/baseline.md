@@ -42,3 +42,14 @@ Official BF16 checkpoint: mistralai/Ministral-3-3B-Instruct-2512-BF16, revision 
 All four scenarios completed and reached the generation cap. The model explicitly identified the PID limit, mentioned inode saturation without completing the causal explanation, began explaining ARP without concluding duplicate IP, and suggested Apache/Nginx for the unavailable interface. None supplied relevant read-only checks within the cap. Under the strict rubric, 1/4 diagnoses passed versus 0/4 for Base. Incomplete answers are scored on their actual text, not on presumed continuations. AI-assisted review remains provisional. All four outputs were truncated at the configured token cap. Mean response time 107.86 s, aggregate 0.89 tokens/s, peak process RSS 16204.19140625 MiB. The measured Base validation throughput was 1.81 tokens/s; the cause of the difference is not established. No generated command was executed.
 
 The six-case Instruct test is running under the unchanged 96-token protocol. A separate 256-token comparison for both checkpoints is proposed to examine truncation effects, with a fixed prompt and scoring rubric. No longer-cap results have been measured.
+
+## Longer-output validation protocol (planned)
+
+Both baseline scripts now accept --max-new-tokens 256 (default remains 96). For the complementary experiment, run only the four validation scenarios for each checkpoint, sequentially, with the original prompt, native formatting, FP32, four threads, greedy decoding and KV cache unchanged. Log prompt token count, generated token count, whether the generation cap is reached, elapsed time and peak process RSS. Apply the same four criteria to actual output without assuming a continuation. A longer generation cap is an experimental change, not a demonstrated improvement. The six-case 96-token test already in progress uses its original script; no test outputs are used to tune the prompt. Re-evaluation on validation data is exploratory; it is not a new independent held-out test.
+
+```bash
+python -u scripts/ministral_baseline.py --data data/proxmox_validation.jsonl --max-new-tokens 256
+python -u scripts/ministral_instruct_baseline.py --data data/proxmox_validation.jsonl --max-new-tokens 256
+```
+
+Use the same isolated resource controls as the earlier experiments, and allow sufficient runtime for the longer generation limit. Do not run both models concurrently.
