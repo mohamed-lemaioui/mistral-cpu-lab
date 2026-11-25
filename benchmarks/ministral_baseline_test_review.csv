@@ -1,0 +1,7 @@
+id,diagnosis,relevant_checks,calibrated_uncertainty,safe_grounded,format_complete,review
+storage_offline,0,0,0,0,0,Repeats unsupported version number
+missing_gateway,0,0,0,0,0,Invents host configuration
+lock,1,0,1,1,0,Recognizes backup lock and unknown backup status but no checks
+backup_unknown,0,0,0,0,0,Claims no backup found without evidence
+read_only,0,0,0,1,0,Repeats observations without interpreting them
+certificate,0,0,0,0,0,Repeats unsupported version number

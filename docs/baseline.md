@@ -27,4 +27,12 @@ nice -n 10 timeout 900 python -u scripts/ministral_baseline.py --data data/proxm
 nice -n 10 timeout 900 python -u scripts/ministral_baseline.py --data data/proxmox_test.jsonl
 ```
 
-The laboratory used an equivalent stdin transport that passed only scenario IDs and observations, CPUQuota=400%, MemorySwapMax=0 and RuntimeMaxSec=900. The test run is pending completion. No adaptation or training has occurred.
+The laboratory used an equivalent stdin transport that passed only scenario IDs and observations, CPUQuota=400%, MemorySwapMax=0 and RuntimeMaxSec=900. The six-case test run completed successfully. No adaptation or training has occurred.
+
+## Held-out test results — 2026-11-25
+
+Six scenarios completed, each reaching 96 generated tokens. One of six diagnoses met the reference criterion (backup lock); no answer provided relevant read-only checks. The remaining responses repeated observations or unsupported version information, invented a host configuration, or asserted that no backup was found. The assessment is AI-assisted and provisional, not independently human-validated. See the captured output and review CSV. No generated command was executed. This small synthetic test does not establish general model capability.
+
+## Instruct comparison protocol
+
+Official BF16 checkpoint: mistralai/Ministral-3-3B-Instruct-2512-BF16, revision ef287ce8b4b5f858eaf679e9d6402265beb8624f, Apache-2.0. The two Transformers shards total 7698241056 bytes. The comparison uses its native chat template with the same user prompt, greedy decoding, 96-token cap, four threads, FP32 text-only weights and no adapters. The template differs intentionally to test each checkpoint in its intended interface; the experiment cannot isolate post-training from formatting effects. Download and inference scripts prepared; Instruct inference not yet validated.
