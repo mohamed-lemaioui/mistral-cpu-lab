@@ -1,0 +1,2 @@
+dtype,tokens,batch,threads,steps,trainable,load_seconds,forward_seconds,step_seconds,loss_before,loss_after,peak_rss_mib,adapter_update,frozen_sample
+fp32,32,1,4,1,1171456,4.17055033,4.509849208,8.713357601,3.882768154144287,3.808133602142334,16216.359375,true,true

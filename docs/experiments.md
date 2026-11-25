@@ -12,4 +12,8 @@ Miniature random Ministral: two layers, hidden size 64, vocabulary 256, 32 token
 
 A single representative matrix multiplication (32x3072 by 3072x9216), frozen weights, forward/backward with four threads, took 0.13292 s FP32 and 10.83084 s BF16. Both gradients were finite. This was a single trial without warm-up and is not a full-model benchmark. It motivates FP32 on this hardware, not a general claim about BF16.
 
-Both official checkpoint shards were downloaded and checked against published SHA-256 metadata. Full pretrained Ministral training has not yet been validated. The experimental loader is included for review; its latest changes have only been syntax checked.
+Both official checkpoint shards were downloaded and checked against published SHA-256 metadata. A full-size text-only FP32 optimizer step has now been validated; domain training remains untested.
+
+## First pretrained Ministral LoRA step — 2026-11-25
+
+Pinned official checkpoint, local cache, text-only FP32, 32 synthetic tokens, batch 1, four threads, seed 42, LoRA r=4 alpha=8 on q_proj/v_proj, AdamW learning rate 1e-4. Model loading 4.17055033 s; forward 4.509849208 s; complete optimizer step 8.713357601 s; initial loss 3.882768154144287, post-update loss on the same sequence 3.808133602142334; peak process RSS 16216.359375 MiB. 1,171,456 trainable parameters. Finite gradients, adapter update and frozen embedding sample checks passed; process exit code 0. A temporary systemd unit enforced 26 GiB memory, no swap, CPU quota 400%, nice 10 and 600 s runtime limit. No container OOM events or swap use observed. One trial, no persisted adapter, no held-out evaluation. The 32 GiB container quota is not a measured minimum. Full checkpoint logits equivalence has not been tested.

@@ -11,7 +11,7 @@ This independent personal research project explores whether useful domain-specif
 | Ministral 3B architecture and LoRA compatibility | Passed on miniature model |
 | Ministral text-only checkpoint mapping | Validated against index; synthetic loading tested |
 | Official Ministral checkpoint download | SHA-256 verified |
-| Full pretrained Ministral CPU LoRA | Not yet validated |
+| Pretrained Ministral text-only CPU LoRA | One optimizer step validated |
 | Domain-specific evaluation | Planned |
 
 ## Ministral 3B: initial findings
@@ -28,6 +28,10 @@ Target: [Ministral-3-3B-Base-2512](https://huggingface.co/mistralai/Ministral-3-
 | Planned LoRA trainable parameters (r=4, q/v projections) | 1,171,456 |
 
 A representative projection microbenchmark on legacy AVX-only CPUs measured 0.133 s in FP32 versus 10.831 s in BF16 for forward and backward. This single trial without warm-up is not a full-model benchmark. See [experimental report](docs/experiments.md) and [recorded measurements](benchmarks/ministral_projection.csv).
+
+## First pretrained CPU LoRA result
+
+On the text-only 3.429B-parameter checkpoint, one FP32 LoRA optimizer step (32 tokens, batch 1, four threads, r=4, alpha=8) completed in 8.713 seconds. Peak process RSS was 15.84 GiB; loss decreased from 3.882768 to 3.808134. Adapter changes and a sampled frozen embedding were checked. This is a feasibility result, not a domain-quality evaluation. See [measurements](benchmarks/ministral_pretrained.csv).
 
 ## Reproduce
 
@@ -46,9 +50,9 @@ After checking available RAM and disk space, the experimental full-size probe ca
 nice -n 10 timeout 600 python -u scripts/ministral_text_probe.py --dtype fp32 --tokens 32 --download
 ```
 
-The command above is a proposed reproduction procedure, not a validated full-model result. Use an isolated environment with an appropriate memory limit. Remove `--download` to require a populated local cache.
+The 32-token FP32 probe was validated using the pinned checkpoint already cached locally. Use an isolated environment with an appropriate memory limit. Remove `--download` to require a populated local cache.
 
-The experimental Ministral loader is not yet validated at full scale. It defaults to FP32, requires a local checkpoint unless `--download` is explicitly supplied, and should only be run with sufficient memory (32 GiB laboratory quota recommended, not a measured minimum). It downloads approximately 7.7 GB of weights. No model weights are distributed here.
+The text-only loader and one FP32 optimizer step have been validated at full parameter scale. It defaults to FP32, requires a local checkpoint unless `--download` is explicitly supplied, and should only be run with sufficient memory (32 GiB laboratory quota recommended, not a measured minimum). It downloads approximately 7.7 GB of weights. No model weights are distributed here.
 
 ## Research methodology
 
