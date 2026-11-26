@@ -75,3 +75,13 @@ Instruct identified inactive storage, missing default route and expired HTTPS ce
 Mean generation-call time: 121.60 s, aggregate throughput 0.789 tokens/s, maximum process RSS 16204.27 MiB. Base test: 49.46 s, 1.941 tokens/s. These measurements include prefill and decoding, with different prompt lengths, dates and process conditions; they do not isolate decoding speed or the effect of post-training. All outputs reached the cap. No generated command was executed. The pilot does not establish general capability or a domain-adapted model.
 
 See [per-case review](../benchmarks/ministral_instruct_test_review.csv) and [combined outputs](../benchmarks/ministral_instruct_test_combined.jsonl). Next: longer-output validation, then a separate concise-system-prompt experiment.
+
+## Optional live text display
+
+Both baseline scripts accept `--stream` to display decoded text incrementally through Transformers TextStreamer. The final RESULT JSON record is still emitted. The streamer is disabled by default; omit this flag for comparative timing measurements to avoid display overhead. Streaming is buffered at text boundaries, not necessarily one visible fragment per token. Static checks passed against the installed API; a live generation test is pending. The running 256-token comparison was not interrupted: Base uses the earlier script and Instruct will use the updated script with streaming disabled.
+
+Example (run only in an isolated environment with the checkpoint cached and no concurrent benchmark):
+
+```bash
+python -u scripts/ministral_instruct_baseline.py --data data/proxmox_validation.jsonl --max-new-tokens 256 --stream
+```

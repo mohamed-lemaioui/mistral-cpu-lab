@@ -26,6 +26,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", required=True, help="JSONL file with id and observations, or - for stdin")
     parser.add_argument("--max-new-tokens", type=int, choices=[96, 256], default=96)
+    parser.add_argument("--stream", action="store_true", help="Display generated text incrementally; disabled for timing benchmarks")
     args = parser.parse_args()
     rows = [json.loads(line) for line in (sys.stdin if args.data == "-" else Path(args.data).read_text().splitlines()) if line.strip()]
     assert rows and len({r["id"] for r in rows}) == len(rows)
@@ -75,11 +76,18 @@ def main():
     for row in rows:
         prompt = PROMPT.format(observations=row["observations"])
         inputs = tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=True, add_generation_prompt=True, return_dict=True, return_tensors="pt")
+        generation_kwargs = {}
+        if args.stream:
+            from transformers import TextStreamer
+            print("STREAM_BEGIN", row["id"], flush=True)
+            generation_kwargs["streamer"] = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
         t = time.perf_counter()
         with torch.inference_mode():
             output = base.generate(**inputs, do_sample=False, max_new_tokens=args.max_new_tokens, use_cache=True,
-                                   pad_token_id=tokenizer.eos_token_id)
+                                   pad_token_id=tokenizer.eos_token_id, **generation_kwargs)
         elapsed = time.perf_counter()-t
+        if args.stream:
+            print("STREAM_END", row["id"], flush=True)
         new = output[0, inputs["input_ids"].shape[1]:]
         print("RESULT", json.dumps(dict(id=row["id"], prompt=prompt,
               answer=tokenizer.decode(new, skip_special_tokens=True),
