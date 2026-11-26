@@ -106,3 +106,12 @@ The longer Instruct answers identify inode exhaustion, probable duplicate IP and
 | instruct_baseline | 234.33 | 1.092 | 16132.92 |
 
 Timing includes prefill and decode, and cache state, date and host conditions differ across runs. The next experiment will compare explicit concise and native system prompts on Instruct, without training.
+
+## System-prompt comparison (running)
+
+The separate script `scripts/ministral_system_prompt.py` compares the native default system message with the explicit fixed message "Tu es un assistant de diagnostic Proxmox." The user prompt and 256-token generation cap are unchanged. Run the four validation cases sequentially in native then concise mode, with the same pinned Instruct checkpoint and resource controls. The script logs input tokens, total generation-call duration, output and RSS; it does not separately measure prefill and decoding. The two prompts differ in content as well as length. Streaming remains disabled for timing. No results have been validated yet.
+
+```bash
+python -u scripts/ministral_system_prompt.py --data data/proxmox_validation.jsonl --max-new-tokens 256 --system native
+python -u scripts/ministral_system_prompt.py --data data/proxmox_validation.jsonl --max-new-tokens 256 --system concise
+```
