@@ -13,7 +13,7 @@ This independent personal research project explores whether useful domain-specif
 | Official Ministral checkpoint download | SHA-256 verified |
 | Pretrained Ministral text-only CPU LoRA | 32, 128 and 256 tokens validated |
 | Base / Instruct diagnostic baseline (96 tokens) | Complete; provisional review |
-| Domain-specific fine-tuning | Planned |
+| Domain-specific fine-tuning | One assistant-only SFT step verified |
 
 ## Ministral 3B: initial findings
 
@@ -75,4 +75,4 @@ See [roadmap](docs/roadmap.md). Upstream model weights retain their respective l
 
 ## Domain diagnostic pilot
 
-A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. Base and Instruct validation and six-case test baselines at 96 tokens are complete. Test diagnoses passed on 1/6 Base and 3/6 Instruct cases (provisional AI-assisted review); no relevant read-only checks were produced. The 256-token validation comparison is complete: Base 0/4 and Instruct 3/4 diagnoses (provisional). Domain training remains pending. See the [baseline report](docs/baseline.md).
+A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. Base and Instruct validation and six-case test baselines at 96 tokens are complete. Test diagnoses passed on 1/6 Base and 3/6 Instruct cases (provisional AI-assisted review); no relevant read-only checks were produced. The 256-token validation comparison is complete: Base 0/4 and Instruct 3/4 diagnoses (provisional). See the [first domain SFT pilot](docs/sft-v1.md) for adapter results and limitations. See the [baseline report](docs/baseline.md).

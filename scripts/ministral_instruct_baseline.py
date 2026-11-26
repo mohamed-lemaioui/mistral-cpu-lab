@@ -21,26 +21,12 @@ Observations : {observations}
 Diagnostic :"""
 
 
-def main():
-    import sys
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--data", required=True, help="JSONL file with id and observations, or - for stdin")
-    parser.add_argument("--max-new-tokens", type=int, choices=[96, 256], default=96)
-    parser.add_argument("--stream", action="store_true", help="Display generated text incrementally; disabled for timing benchmarks")
-    args = parser.parse_args()
-    rows = [json.loads(line) for line in (sys.stdin if args.data == "-" else Path(args.data).read_text().splitlines()) if line.strip()]
-    assert rows and len({r["id"] for r in rows}) == len(rows)
-    torch.set_num_threads(4)
-    torch.set_num_interop_threads(1)
-    torch.manual_seed(42)
-    dtype = torch.float32
+def load_text_model(*, use_cache):
     def fetch(f):
         return hf_hub_download(NAME, f, revision=REV, local_files_only=True)
     cfg = AutoConfig.from_pretrained(NAME, revision=REV, trust_remote_code=False,
                                      local_files_only=True).text_config
-    cfg.use_cache = True
-    tokenizer = AutoTokenizer.from_pretrained(NAME, revision=REV, trust_remote_code=False,
-                                               local_files_only=True)
+    cfg.use_cache = use_cache
     index = json.loads(Path(fetch('model.safetensors.index.json')).read_text())['weight_map']
     mapping = {k: v for k, v in index.items() if k.startswith(PREFIX)}
     with init_empty_weights():
@@ -63,7 +49,7 @@ def main():
                 old = base.get_parameter(target)
                 assert old.shape == tensor.shape and old.is_meta
                 # BF16 uses mmap; FP32 converts one tensor at a time.
-                tensor = tensor.to(dtype=dtype)
+                tensor = tensor.to(dtype=torch.float32)
                 parent, leaf = target.rsplit('.', 1)
                 setattr(base.get_submodule(parent), leaf, torch.nn.Parameter(tensor, requires_grad=False))
     base.tie_weights()
@@ -73,6 +59,24 @@ def main():
     print('LOADED', time.perf_counter()-t, 'RSS_MIB', resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024, flush=True)
     base.eval()
     assert not any(p.requires_grad for p in base.parameters())
+    return base
+
+
+def main():
+    import sys
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data", required=True, help="JSONL file with id and observations, or - for stdin")
+    parser.add_argument("--max-new-tokens", type=int, choices=[96, 256], default=96)
+    parser.add_argument("--stream", action="store_true", help="Display generated text incrementally; disabled for timing benchmarks")
+    args = parser.parse_args()
+    rows = [json.loads(line) for line in (sys.stdin if args.data == "-" else Path(args.data).read_text().splitlines()) if line.strip()]
+    assert rows and len({r["id"] for r in rows}) == len(rows)
+    torch.set_num_threads(4)
+    torch.set_num_interop_threads(1)
+    torch.manual_seed(42)
+    tokenizer = AutoTokenizer.from_pretrained(NAME, revision=REV, trust_remote_code=False,
+                                               local_files_only=True)
+    base = load_text_model(use_cache=True)
     for row in rows:
         prompt = PROMPT.format(observations=row["observations"])
         inputs = tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=True, add_generation_prompt=True, return_dict=True, return_tensors="pt")

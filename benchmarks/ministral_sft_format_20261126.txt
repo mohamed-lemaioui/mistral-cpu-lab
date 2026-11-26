@@ -1,0 +1,13 @@
+Running as unit: ministral-sft-format.service
+[transformers] `tokenizer_class` is `LlamaTokenizerFast` but `tokenizer.json` is ByteLevel; loading `TokenizersBackend`. Set `tokenizer_class` to `TokenizersBackend` in `tokenizer_config.json`.
+CONFIG {"model": "mistralai/Ministral-3-3B-Instruct-2512-BF16", "revision": "ef287ce8b4b5f858eaf679e9d6402265beb8624f", "transformers": "5.24.1", "torch": "2.15.0+cpu", "utc": "2026-11-26T09:58:25.049657+00:00", "corpus_sha256": "b98db3651f10f05de80e4d103aee7d2c1444e105b368216f5e1632e1bd31a5d9"}
+MASK {"id": "md_mirror", "total": 697, "masked": 637, "supervised": 60, "tokens_sha256": "ba5ebb07b5b645473df3b67a61cc3ed67bdd3b389e6bc316c8c662e4bb642494"}
+MASK {"id": "cpu_bandwidth", "total": 715, "masked": 654, "supervised": 61, "tokens_sha256": "d18b2ac72b0f848a15ed84125c074adc8e2caf3e51e4a2745828ac7f3903f441"}
+MASK {"id": "timer_schedule", "total": 702, "masked": 636, "supervised": 66, "tokens_sha256": "34be70e7bc298f616f6f83f80aff224e7f86ba1bfa1c40ff44110db71653352d"}
+MASK {"id": "rx_counter", "total": 711, "masked": 652, "supervised": 59, "tokens_sha256": "097e276ee70bc51aee11512f474b83b9f0a832cc49db0d35381587c911272040"}
+FORMAT_OK 4 SECONDS 1.2658409409996239 RSS_MIB 539.69140625
+Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+Service runtime: 8.508s
+CPU time consumed: 8.996s
+Memory peak: 458.5M (swap: 0B)

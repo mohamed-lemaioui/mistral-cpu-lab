@@ -1,0 +1,12 @@
+Running as unit: ministral-sft-step.service
+[transformers] `tokenizer_class` is `LlamaTokenizerFast` but `tokenizer.json` is ByteLevel; loading `TokenizersBackend`. Set `tokenizer_class` to `TokenizersBackend` in `tokenizer_config.json`.
+SHARD model-00001-of-00002.safetensors
+SHARD model-00002-of-00002.safetensors
+LOADED 4.632542037999883 RSS_MIB 16146.0390625
+STEP cpu_bandwidth 715 4.156544208526611 317.2135255030007
+SFT_STEP_OK step-tmpzdib6mia {"model": "mistralai/Ministral-3-3B-Instruct-2512-BF16", "revision": "ef287ce8b4b5f858eaf679e9d6402265beb8624f", "example": "cpu_bandwidth", "steps": 1, "seed": 42, "trainable": 1171456, "optimizer": "AdamW", "lr": 0.0001, "corpus_sha256": "b98db3651f10f05de80e4d103aee7d2c1444e105b368216f5e1632e1bd31a5d9", "tokens_sha256": "d18b2ac72b0f848a15ed84125c074adc8e2caf3e51e4a2745828ac7f3903f441", "total": 715, "supervised": 61, "loss": 4.156544208526611, "step_seconds": 317.2135255030007, "versions": {"torch": "2.15.0+cpu", "peft": "0.22.0", "transformers": "5.24.1", "safetensors": "0.8.0"}, "rss_mib": 18171.90234375}
+Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+Service runtime: 9min 38.015s
+CPU time consumed: 30min 18.150s
+Memory peak: 17.6G (swap: 0B)
