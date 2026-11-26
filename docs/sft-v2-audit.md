@@ -23,3 +23,13 @@ The epoch trainer requires the exact approved corpus SHA256, pins the model revi
 - Fixture timing does not estimate the cost of a full epoch. No training or new benchmark was run for this audit.
 
 See the [case-by-case review](corpus-v2-review.md), [contamination audit](../benchmarks/ministral_sft_v2_contamination_audit_20261126.txt), [token lengths and masks](../benchmarks/ministral_sft_v2_lengths_20261126.txt), and [resume fixture log](../benchmarks/ministral_sft_v2_resume_20261126.txt).
+
+## Independent AI-assisted follow-up review — 2026-11-26
+
+The 100 training observations/answers, 12 evaluation cases, training code and existing logs were inspected. This was not an independent human review or an exhaustive source-by-source verification. The recorded token lengths are 658–700, with **31–62** supervised tokens (correcting the earlier range). Both corpus hashes match the reviewed versions.
+
+The v2 evaluation consists solely of eight Ceph and four chrony cases. It is suitable as a limited out-of-domain transfer probe, not as sufficient evidence of improvement on trained domains. A separate in-domain validation set with distinct scenarios and frozen scoring criteria is needed before training. Public AI-authored cases are not a blind test.
+
+The lexical audit selects a lexicographic maximum of (containment, Jaccard, ID), which can hide a high Jaccard score. Independently recalculating both metrics for every evaluation/historical evaluation pair against v2 training and historical/earlier training (excluding identical IDs) found maximum containment 0 and maximum Jaccard 0.088983 and 0.204545 respectively, with no threshold violations. This does not establish semantic independence.
+
+Before the first checkpoint, an existing token plan can be accepted with altered token IDs or labels despite length checks. Strengthen plan validation and test this case. The recorded resume test is on a tiny synthetic Llama fixture, not the full Ministral model; its script was missing from the published snapshot. These findings require follow-up. No data or training scripts were modified in this review, and no new model run or training was performed. Human approval of the exact training corpus remains pending.
