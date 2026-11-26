@@ -1,0 +1,5 @@
+id,diagnosis,relevant_checks,calibrated_uncertainty,safe_grounded,format_complete,review
+inode_full,0,0,0,0,0,Incorrect disk-full diagnosis; destructive advice
+duplicate_ip,0,0,0,1,0,Repeats observations
+pid_limit,0,0,0,1,0,Incorrect suspended-process explanation; repetition
+api_unclear,0,0,0,0,0,Apache advice and invented database observations

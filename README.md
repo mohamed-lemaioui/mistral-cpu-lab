@@ -75,4 +75,4 @@ See [roadmap](docs/roadmap.md). Upstream model weights retain their respective l
 
 ## Domain diagnostic pilot
 
-A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. Base and Instruct validation and six-case test baselines at 96 tokens are complete. Test diagnoses passed on 1/6 Base and 3/6 Instruct cases (provisional AI-assisted review); no relevant read-only checks were produced. Longer-output validation and domain training remain pending. See the [baseline report](docs/baseline.md).
+A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. Base and Instruct validation and six-case test baselines at 96 tokens are complete. Test diagnoses passed on 1/6 Base and 3/6 Instruct cases (provisional AI-assisted review); no relevant read-only checks were produced. The 256-token validation comparison is complete: Base 0/4 and Instruct 3/4 diagnoses (provisional). Domain training remains pending. See the [baseline report](docs/baseline.md).

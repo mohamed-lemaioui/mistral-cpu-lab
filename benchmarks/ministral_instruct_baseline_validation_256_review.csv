@@ -1,0 +1,5 @@
+id,diagnosis,relevant_checks,calibrated_uncertainty,safe_grounded,format_complete,review
+inode_full,1,1,0,0,0,Recognizes inode exhaustion and suggests df -i; unsupported single-file explanation
+duplicate_ip,1,0,1,0,0,Identifies probable duplicate IP; unsupported ARP explanation and speculation
+pid_limit,1,0,0,1,0,Identifies process limit and fork failure; checks incomplete
+api_unclear,0,0,0,0,0,Misleading Apache/Nginx and port 80/443 focus; no explicit insufficient-evidence conclusion

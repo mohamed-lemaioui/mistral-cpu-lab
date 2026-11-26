@@ -41,9 +41,9 @@ Official BF16 checkpoint: mistralai/Ministral-3-3B-Instruct-2512-BF16, revision 
 
 All four scenarios completed and reached the generation cap. The model explicitly identified the PID limit, mentioned inode saturation without completing the causal explanation, began explaining ARP without concluding duplicate IP, and suggested Apache/Nginx for the unavailable interface. None supplied relevant read-only checks within the cap. Under the strict rubric, 1/4 diagnoses passed versus 0/4 for Base. Incomplete answers are scored on their actual text, not on presumed continuations. AI-assisted review remains provisional. All four outputs were truncated at the configured token cap. Mean response time 107.86 s, aggregate 0.89 tokens/s, peak process RSS 16204.19140625 MiB. The measured Base validation throughput was 1.81 tokens/s; the cause of the difference is not established. No generated command was executed.
 
-The six-case Instruct test is complete under the 96-token protocol; see the results below. A separate 256-token comparison for both checkpoints is proposed to examine truncation effects, with a fixed prompt and scoring rubric. No longer-cap results have been measured.
+The six-case Instruct test is complete under the 96-token protocol; see the results below. A separate 256-token comparison for both checkpoints is proposed to examine truncation effects, with a fixed prompt and scoring rubric. Longer-cap results are reported below.
 
-## Longer-output validation protocol (planned)
+## Longer-output validation protocol
 
 Both baseline scripts now accept --max-new-tokens 256 (default remains 96). For the complementary experiment, run only the four validation scenarios for each checkpoint, sequentially, with the original prompt, native formatting, FP32, four threads, greedy decoding and KV cache unchanged. Log prompt token count, generated token count, whether the generation cap is reached, elapsed time and peak process RSS. Apply the same four criteria to actual output without assuming a continuation. A longer generation cap is an experimental change, not a demonstrated improvement. The six-case 96-token test used the original generation settings; no test outputs are used to tune the prompt. Re-evaluation on validation data is exploratory; it is not a new independent held-out test.
 
@@ -85,3 +85,24 @@ Example (run only in an isolated environment with the checkpoint cached and no c
 ```bash
 python -u scripts/ministral_instruct_baseline.py --data data/proxmox_validation.jsonl --max-new-tokens 256 --stream
 ```
+
+## Validation at 256 generated tokens — 2026-11-26
+
+Both four-case runs completed sequentially (overall process exit 0). All eight answers reached the cap. The same prompts and decoding settings were retained except the increased output limit. Streaming was disabled. Provisional AI-assisted scores:
+
+| Criterion | Base 96 | Base 256 | Instruct 96 | Instruct 256 |
+|---|---:|---:|---:|---:|
+| Diagnosis | 0/4 | 0/4 | 1/4 | 3/4 |
+| Relevant checks | 0/4 | 0/4 | 0/4 | 1/4 |
+| Calibrated uncertainty | 0/4 | 0/4 | 0/4 | 1/4 |
+| Safe and grounded | 2/4 | 2/4 | 3/4 | 1/4 |
+| Complete format | 0/4 | 0/4 | 0/4 | 0/4 |
+
+The longer Instruct answers identify inode exhaustion, probable duplicate IP and the process limit. They also expose unsupported explanations. The web-interface case still focuses on Apache/Nginx and ports 80/443 instead of pveproxy and 8006. Base repeats text, suggests destructive file operations and invents database failures. Safety scoring penalizes unsupported technical explanations as well as unsafe actions; earlier short outputs expose fewer claims. The scores are provisional and require independent human review; no command was executed. These repeated validation cases are not a fresh test set.
+
+| Model | Mean generation-call seconds | Aggregate tokens/s | Peak RSS MiB |
+|---|---:|---:|---:|
+| baseline | 158.18 | 1.618 | 16132.41 |
+| instruct_baseline | 234.33 | 1.092 | 16132.92 |
+
+Timing includes prefill and decode, and cache state, date and host conditions differ across runs. The next experiment will compare explicit concise and native system prompts on Instruct, without training.
