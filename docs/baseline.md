@@ -107,11 +107,32 @@ The longer Instruct answers identify inode exhaustion, probable duplicate IP and
 
 Timing includes prefill and decode, and cache state, date and host conditions differ across runs. The next experiment will compare explicit concise and native system prompts on Instruct, without training.
 
-## System-prompt comparison (running)
+## System-prompt comparison
 
-The separate script `scripts/ministral_system_prompt.py` compares the native default system message with the explicit fixed message "Tu es un assistant de diagnostic Proxmox." The user prompt and 256-token generation cap are unchanged. Run the four validation cases sequentially in native then concise mode, with the same pinned Instruct checkpoint and resource controls. The script logs input tokens, total generation-call duration, output and RSS; it does not separately measure prefill and decoding. The two prompts differ in content as well as length. Streaming remains disabled for timing. No results have been validated yet.
+The separate script `scripts/ministral_system_prompt.py` compares the native default system message with the explicit fixed message "Tu es un assistant de diagnostic Proxmox." The user prompt and 256-token generation cap are unchanged. Run the four validation cases sequentially in native then concise mode, with the same pinned Instruct checkpoint and resource controls. The script logs input tokens, total generation-call duration, output and RSS; it does not separately measure prefill and decoding. The two prompts differ in content as well as length. Streaming remains disabled for timing. Results are reported below.
 
 ```bash
 python -u scripts/ministral_system_prompt.py --data data/proxmox_validation.jsonl --max-new-tokens 256 --system native
 python -u scripts/ministral_system_prompt.py --data data/proxmox_validation.jsonl --max-new-tokens 256 --system concise
 ```
+
+
+### System-prompt results — 2026-11-26
+
+Both modes completed four validation cases, all reaching 256 generated tokens. The native outputs were textually identical to the earlier 256-token Instruct baseline.
+
+| Metric | Native | Concise |
+|---|---:|---:|
+| Mean input tokens | 611.25 | 84.25 |
+| Mean generation-call seconds | 182.96 | 202.29 |
+| Aggregate tokens/s | 1.399 | 1.266 |
+| Peak RSS MiB | 16132.86 | 16133.14 |
+| Diagnosis | 3/4 | 1/4 |
+| Relevant checks | 1/4 | 0/4 |
+| Calibrated uncertainty | 1/4 | 2/4 |
+| Safe and grounded | 1/4 | 0/4 |
+| Complete format | 0/4 | 0/4 |
+
+The concise prompt reduced total input tokens by 86.22%, but mean end-to-end generation time increased by 10.56% in this run. It missed inode exhaustion, misinterpreted the cgroup PID limit as per CPU, and retained the misleading Apache/Nginx diagnosis. The duplicate-IP diagnosis remained correct. The native prompt produced a stronger diagnostic result under the provisional AI-assisted rubric. No independent human review has been performed.
+
+The native rerun itself varied from the earlier mean of 234.33 seconds to 182.96 seconds despite identical generated text. Fixed run order, uncontrolled host/cache conditions, content differences and no isolated prefill/decode timings prevent attributing the measured slowdown causally to prompt length. These four repeatedly used validation scenarios do not establish general model behavior. Retain the native prompt as the current reference; no domain training has occurred. No generated command was executed.

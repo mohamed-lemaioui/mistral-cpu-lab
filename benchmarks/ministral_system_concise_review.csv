@@ -1,0 +1,5 @@
+id,diagnosis,relevant_checks,calibrated_uncertainty,safe_grounded,format_complete,review
+inode_full,0,0,0,0,0,Misreads block usage and misses inode exhaustion
+duplicate_ip,1,0,1,0,0,Recognizes possible duplicate IP; speculative configuration explanations
+pid_limit,0,0,0,0,0,Incorrectly describes cgroup PID limit as per CPU
+api_unclear,0,0,1,0,0,Acknowledges limited observations but suggests Apache/Nginx and wrong default ports
