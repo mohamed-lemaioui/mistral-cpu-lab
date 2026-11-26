@@ -1,5 +1,8 @@
 """Pinned text-only FP32 diagnostic baseline; no remote code."""
 import argparse
+import hashlib
+from datetime import datetime, timezone
+from importlib.metadata import version
 import json
 import resource
 import time
@@ -68,6 +71,7 @@ def main():
     parser.add_argument("--data", required=True, help="JSONL file with id and observations, or - for stdin")
     parser.add_argument("--max-new-tokens", type=int, choices=[96, 256], default=96)
     parser.add_argument("--stream", action="store_true", help="Display generated text incrementally; disabled for timing benchmarks")
+    parser.add_argument("--adapter", type=Path, help="Load a local SFT adapter for frozen inference")
     args = parser.parse_args()
     rows = [json.loads(line) for line in (sys.stdin if args.data == "-" else Path(args.data).read_text().splitlines()) if line.strip()]
     assert rows and len({r["id"] for r in rows}) == len(rows)
@@ -77,6 +81,21 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(NAME, revision=REV, trust_remote_code=False,
                                                local_files_only=True)
     base = load_text_model(use_cache=True)
+    if args.adapter:
+        from peft import PeftModel
+        meta = json.loads((args.adapter / "run.json").read_text())
+        if (meta["model"], meta["revision"]) != (NAME, REV):
+            raise ValueError("Adapter base checkpoint mismatch")
+        hashes = {name: hashlib.sha256((args.adapter / name).read_bytes()).hexdigest()
+                  for name in ("adapter_model.safetensors", "adapter_config.json")}
+        base = PeftModel.from_pretrained(base, args.adapter, is_trainable=False).eval()
+        adapter_size = sum(p.numel() for name, p in base.named_parameters() if ".lora_" in name)
+        if adapter_size != meta["trainable"] or any(p.requires_grad for p in base.parameters()):
+            raise ValueError("Unexpected adapter parameters or trainable weights")
+        print("ADAPTER", json.dumps(dict(model=NAME, revision=REV, sha256=hashes,
+              adapter_parameters=adapter_size, active=base.active_adapters,
+              utc=datetime.now(timezone.utc).isoformat(),
+              versions={p: version(p) for p in ("peft", "transformers", "torch")})), flush=True)
     for row in rows:
         prompt = PROMPT.format(observations=row["observations"])
         inputs = tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=True, add_generation_prompt=True, return_dict=True, return_tensors="pt")

@@ -1,0 +1,5 @@
+id,diagnosis,relevant_checks,calibrated_uncertainty,safe_grounded,format_complete,review
+inode_full,1,0,0,0,0,Identifies full inode use with spare blocks. Repeats the supplied df result and introduces unsupported metadata corruption. Ends before a concrete check.
+duplicate_ip,1,0,1,0,0,Identical text to original. A duplicate IP is possible. The ARP cache explanation is unsupported and no check is delivered.
+pid_limit,1,0,0,0,0,Recognizes the reached limit but explicitly attributes fork failure to PID counter saturation. The unfinished ps command does not check the affected cgroup.
+api_unclear,0,0,0,0,0,Identical text to original. Focuses on Apache/Nginx and 80/443 without establishing the service involved or explicitly identifying insufficient evidence.

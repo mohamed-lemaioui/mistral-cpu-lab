@@ -76,3 +76,5 @@ See [roadmap](docs/roadmap.md). Upstream model weights retain their respective l
 ## Domain diagnostic pilot
 
 A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. Base and Instruct validation and six-case test baselines at 96 tokens are complete. Test diagnoses passed on 1/6 Base and 3/6 Instruct cases (provisional AI-assisted review); no relevant read-only checks were produced. The 256-token validation comparison is complete: Base 0/4 and Instruct 3/4 diagnoses (provisional). See the [first domain SFT pilot](docs/sft-v1.md) for adapter results and limitations. See the [baseline report](docs/baseline.md).
+
+On the four frozen validation cases, original Instruct and its one-step SFT adapter each produced three correct diagnoses. The adapted model lost the only relevant read-only check. Both missed the insufficient-evidence case and reached the 256-token cap on every answer. See the [paired evaluation and per-case findings](docs/sft-validation.md).
