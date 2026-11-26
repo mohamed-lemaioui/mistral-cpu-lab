@@ -93,7 +93,10 @@ def main():
         scored = [(containment(case_ngrams, ngrams(other["_content"], 12)),
                    jaccard(case_chars, chargrams(other["_content"])), other["id"])
                   for other in pool]
-        return max(scored) if scored else (0.0, 0.0, None)
+        # Maximize each metric independently; tuple ordering can hide a high Jaccard.
+        max_cont = max(scored, key=lambda item: (item[0], item[1])) if scored else (0.0, 0.0, None)
+        max_jac = max(scored, key=lambda item: (item[1], item[0])) if scored else (0.0, 0.0, None)
+        return max_cont[0], max_jac[1], f"containment:{max_cont[2]} jaccard:{max_jac[2]}"
 
     failures = []
     for case in holdout + historical_eval:

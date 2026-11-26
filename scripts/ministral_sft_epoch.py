@@ -82,9 +82,23 @@ def prepare_plan(raw, root, base_fingerprint):
         plan = json.loads(path.read_bytes())
         if plan["identity"] != identity or [x["id"] for x in plan["examples"]] != [r["id"] for r in order]:
             raise ValueError("Corpus, recipe, order or environment changed")
-        for example in plan["examples"]:
-            if len(example["ids"]) != len(example["labels"]) or len(example["ids"]) > MAX_SEQ_LEN:
-                raise ValueError("Invalid token plan")
+        if len(plan.get("examples", [])) != len(order):
+            raise ValueError("Invalid token plan example count")
+        for row, example in zip(order, plan["examples"], strict=True):
+            if example.get("id") != row["id"]:
+                raise ValueError("Token plan ID/order mismatch")
+            ids, labels = example.get("ids"), example.get("labels")
+            if (not isinstance(ids, list) or not isinstance(labels, list)
+                    or not ids or len(ids) != len(labels) or len(ids) > MAX_SEQ_LEN
+                    or any(type(token) is not int or token < 0 for token in ids)
+                    or any(type(label) is not int or label < -100 for label in labels)
+                    or not any(label != -100 for label in labels)):
+                raise ValueError(f"Invalid token plan for {row['id']}")
+            if not any(label == -100 for label in labels):
+                raise ValueError(f"Missing prompt mask in token plan for {row['id']}")
+        token_hash = digest(json.dumps(plan["examples"], sort_keys=True, separators=(",", ":")).encode())
+        if plan.get("plan_sha256") != token_hash:
+            raise ValueError("Token plan integrity hash mismatch")
     else:
         if any(root.glob("step-*")):
             raise ValueError("Missing token plan for existing checkpoints")
@@ -97,10 +111,14 @@ def prepare_plan(raw, root, base_fingerprint):
                 raise ValueError(f"Invalid token length for {row['id']}")
             examples.append(dict(id=row["id"], ids=ids, labels=labels))
         plan = dict(identity=identity, examples=examples)
+        plan["plan_sha256"] = digest(json.dumps(examples, sort_keys=True, separators=(",", ":")).encode())
         with tempfile.NamedTemporaryFile(mode="w", dir=root, delete=False) as tmp:
             json.dump(plan, tmp)
         os.replace(tmp.name, path)
-    return plan["examples"], digest(path.read_bytes())
+    token_hash = digest(json.dumps(plan["examples"], sort_keys=True, separators=(",", ":")).encode())
+    if plan.get("plan_sha256") != token_hash:
+        raise ValueError("Token plan integrity hash mismatch")
+    return plan["examples"], token_hash
 
 
 def checkpoint(root, step, model, optimizer, names, plan_hash, loss, grad_norm,
