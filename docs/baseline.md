@@ -78,7 +78,7 @@ See [per-case review](../benchmarks/ministral_instruct_test_review.csv) and [com
 
 ## Optional live text display
 
-Both baseline scripts accept `--stream` to display decoded text incrementally through Transformers TextStreamer. The final RESULT JSON record is still emitted. The streamer is disabled by default; omit this flag for comparative timing measurements to avoid display overhead. Streaming is buffered at text boundaries, not necessarily one visible fragment per token. Static checks passed against the installed API; a live generation test is pending. The running 256-token comparison was not interrupted: Base uses the earlier script and Instruct will use the updated script with streaming disabled.
+Both baseline scripts accept `--stream` to display decoded text incrementally through Transformers TextStreamer. The final RESULT JSON record is still emitted. The streamer is disabled by default; omit this flag for comparative timing measurements to avoid display overhead. Streaming is buffered at text boundaries, not necessarily one visible fragment per token. A single-case Instruct streaming smoke test completed successfully on 2026-11-26. The displayed text exactly matched the final JSON and earlier 96-token baseline. Fragment arrival intervals were not measured; the captured log is benchmarks/ministral_stream_smoke_20261126.txt. This is a functional test, not a throughput comparison. The running 256-token comparison was not interrupted: Base uses the earlier script and Instruct will use the updated script with streaming disabled.
 
 Example (run only in an isolated environment with the checkpoint cached and no concurrent benchmark):
 

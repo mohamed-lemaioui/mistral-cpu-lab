@@ -1,0 +1,15 @@
+[transformers] `tokenizer_class` is `LlamaTokenizerFast` but `tokenizer.json` is ByteLevel; loading `TokenizersBackend`. Set `tokenizer_class` to `TokenizersBackend` in `tokenizer_config.json`.
+SHARD model-00001-of-00002.safetensors
+SHARD model-00002-of-00002.safetensors
+LOADED 4.89379107700006 RSS_MIB 16132.84765625
+STREAM_BEGIN inode_full
+Voici une analyse basée uniquement sur les observations fournies, avec des vérifications recommandées en **mode lecture seule** (sans exécution de commandes) pour isoler les problèmes identifiés :
+
+---
+
+### **1. Problème principal : Disque plein (`No space left on device`)**
+- **Cause probable** :
+  - Le système est en **35% d'espace disque sur `/`** (racine), mais **100% d'inodes
+STREAM_END inode_full
+RESULT {"id": "inode_full", "prompt": "Diagnostic Proxmox en français. Analyse uniquement les observations fournies. Propose des vérifications en lecture seule. Si les preuves sont insuffisantes, indique-le. Ne prétends pas avoir exécuté de commandes.\nObservations : df -h /: 35%; df -i /: 100%; touch: No space left on device\nDiagnostic :", "answer": "Voici une analyse basée uniquement sur les observations fournies, avec des vérifications recommandées en **mode lecture seule** (sans exécution de commandes) pour isoler les problèmes identifiés :\n\n---\n\n### **1. Problème principal : Disque plein (`No space left on device`)**\n- **Cause probable** :\n  - Le système est en **35% d'espace disque sur `/`** (racine), mais **100% d'inodes", "generated_tokens": 96, "max_new_tokens": 96, "prompt_tokens": 622, "reached_cap": true, "seconds": 191.12273934100085, "rss_mib": 16132.84765625}
+BASELINE_OK 1
