@@ -66,6 +66,15 @@ def main():
         split.mkdir()
         train(tiny_base(), examples, straight, signature, None, 2, 256)
         train(tiny_base(), examples, split, signature, None, 1, 256)
+        # Force the opposite ordering to exercise PEFT's unordered target modules.
+        config_path = split / "step-001" / "adapter_config.json"
+        config = json.loads(config_path.read_text())
+        config["target_modules"] = ["v_proj", "q_proj"]
+        config_path.write_text(json.dumps(config))
+        meta_path = split / "step-001" / "run.json"
+        meta = json.loads(meta_path.read_text())
+        meta["sha256"]["adapter_config.json"] = hashlib.sha256(config_path.read_bytes()).hexdigest()
+        meta_path.write_text(json.dumps(meta))
         train(tiny_base(), examples, split, signature, split / "step-001", 1, 256)
         a, b = [load_file(d / "step-002" / "adapter_model.safetensors") for d in (straight, split)]
         assert a.keys() == b.keys() and all(torch.equal(a[k], b[k]) for k in a)

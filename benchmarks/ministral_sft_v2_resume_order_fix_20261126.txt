@@ -1,0 +1,11 @@
+Running as unit: ministral-sft-v2-resume-order-fix.service
+COMMITTED 1 fixture-42 loss 3.4974117279052734 grad_norm 0.19356830393741956 adapter_delta 9.99999901978299e-05 seconds 0.009839100999670336 RSS_MIB 366.73046875
+COMMITTED 2 fixture-41 loss 3.53153133392334 grad_norm 0.19939411585239097 adapter_delta 0.00010012731945607811 seconds 0.005771790998551296 RSS_MIB 367.10546875
+COMMITTED 1 fixture-42 loss 3.4974117279052734 grad_norm 0.19356830393741956 adapter_delta 9.99999901978299e-05 seconds 0.005916722002439201 RSS_MIB 367.29296875
+COMMITTED 2 fixture-41 loss 3.53153133392334 grad_norm 0.19939411585239097 adapter_delta 0.00010012731945607811 seconds 0.005516755998542067 RSS_MIB 367.29296875
+RESUME_OK exact adapters, AdamW state and RNG; corrupted, wrong-model and wrong-recipe checkpoints rejected
+Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+Service runtime: 8.387s
+CPU time consumed: 8.929s
+Memory peak: 270.9M (swap: 0B)

@@ -1,0 +1,19 @@
+Running as unit: ministral-sft-v2-resume-followup.service
+COMMITTED 1 fixture-42 loss 3.4974117279052734 grad_norm 0.19356830393741956 adapter_delta 9.99999901978299e-05 seconds 0.010298159999365453 RSS_MIB 367.3671875
+COMMITTED 2 fixture-41 loss 3.53153133392334 grad_norm 0.19939411585239097 adapter_delta 0.00010012731945607811 seconds 0.006832034003309673 RSS_MIB 367.5546875
+COMMITTED 1 fixture-42 loss 3.4974117279052734 grad_norm 0.19356830393741956 adapter_delta 9.99999901978299e-05 seconds 0.0062001550031709485 RSS_MIB 367.5546875
+Traceback (most recent call last):
+  File "/tmp/scripts/check_sft_resume.py", line 127, in <module>
+    main()
+    ~~~~^^
+  File "/tmp/scripts/check_sft_resume.py", line 69, in main
+    train(tiny_base(), examples, split, signature, split / "step-001", 1, 256)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/scripts/ministral_sft_epoch.py", line 163, in train
+    raise ValueError(f"Adapter configuration mismatch: {key}")
+ValueError: Adapter configuration mismatch: target_modules
+Finished with result: exit-code
+Main processes terminated with: code=exited, status=1/FAILURE
+Service runtime: 8.195s
+CPU time consumed: 8.704s
+Memory peak: 270.7M (swap: 0B)

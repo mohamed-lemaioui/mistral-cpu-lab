@@ -92,6 +92,7 @@ def prepare_plan(raw, root, base_fingerprint):
                     or not ids or len(ids) != len(labels) or len(ids) > MAX_SEQ_LEN
                     or any(type(token) is not int or token < 0 for token in ids)
                     or any(type(label) is not int or label < -100 for label in labels)
+                    or any(label != -100 and label != token for token, label in zip(ids, labels))
                     or not any(label != -100 for label in labels)):
                 raise ValueError(f"Invalid token plan for {row['id']}")
             if not any(label == -100 for label in labels):
@@ -118,7 +119,7 @@ def prepare_plan(raw, root, base_fingerprint):
     token_hash = digest(json.dumps(plan["examples"], sort_keys=True, separators=(",", ":")).encode())
     if plan.get("plan_sha256") != token_hash:
         raise ValueError("Token plan integrity hash mismatch")
-    return plan["examples"], token_hash
+    return plan["examples"], digest(path.read_bytes())
 
 
 def checkpoint(root, step, model, optimizer, names, plan_hash, loss, grad_norm,
@@ -159,7 +160,15 @@ def train(base, examples, root, plan_hash, start_checkpoint, steps_this_session,
                 raise ValueError(f"Damaged checkpoint file: {file}")
         adapter_config = json.loads((start_checkpoint / "adapter_config.json").read_text())
         for key, value in ADAPTER.items():
-            if adapter_config.get(key) != value:
+            actual = adapter_config.get(key)
+            # PEFT serializes target_modules from a set; order has no meaning.
+            if key == "target_modules":
+                matches = (isinstance(actual, list) and len(actual) == len(value)
+                           and all(isinstance(item, str) for item in actual)
+                           and set(actual) == set(value))
+            else:
+                matches = actual == value
+            if not matches:
                 raise ValueError(f"Adapter configuration mismatch: {key}")
         model = PeftModel.from_pretrained(base, start_checkpoint, is_trainable=True)
     else:
