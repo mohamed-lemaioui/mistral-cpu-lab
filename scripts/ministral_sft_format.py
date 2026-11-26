@@ -12,9 +12,13 @@ from transformers import AutoTokenizer
 
 from ministral_instruct_baseline import NAME, PROMPT, REV
 
+MAX_SEQ_LEN = 1024
+
 
 def encode(tokenizer, row):
-    messages = [{"role": "user", "content": PROMPT.format(observations=row["observations"])}]
+    if PROMPT.count("{observations}") != 1:
+        raise ValueError("Prompt template must contain exactly one observations placeholder")
+    messages = [{"role": "user", "content": PROMPT.replace("{observations}", row["observations"])}]
     prompt = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True,
                                            return_dict=True, truncation=False)["input_ids"]
     answer = row["answer"]
@@ -29,7 +33,12 @@ def encode(tokenizer, row):
     decoded = tokenizer.decode(target[:-1], skip_special_tokens=False, clean_up_tokenization_spaces=False)
     if decoded != answer or any(token in tokenizer.all_special_ids for token in target[:-1]):
         raise ValueError(f"Response boundary or content mismatch for {row['id']}")
-    return ids, [-100] * len(prompt) + target
+    if len(ids) > MAX_SEQ_LEN:
+        raise ValueError(f"Sequence too long for {row['id']}: {len(ids)} tokens")
+    labels = [-100] * len(prompt) + target
+    if len(labels) != len(ids):
+        raise ValueError(f"Label length mismatch for {row['id']}")
+    return ids, labels
 
 
 def main():

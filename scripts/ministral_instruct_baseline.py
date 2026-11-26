@@ -97,7 +97,7 @@ def main():
               utc=datetime.now(timezone.utc).isoformat(),
               versions={p: version(p) for p in ("peft", "transformers", "torch")})), flush=True)
     for row in rows:
-        prompt = PROMPT.format(observations=row["observations"])
+        prompt = PROMPT.replace("{observations}", row["observations"])
         inputs = tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=True, add_generation_prompt=True, return_dict=True, return_tensors="pt")
         generation_kwargs = {}
         if args.stream:

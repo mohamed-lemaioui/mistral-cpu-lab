@@ -1,0 +1,18 @@
+HOLDOUT_SHA256 9bfd367e911016794d0a38490f1e56ccaf0e27bfd2707fba646c9bad40de2c8d
+ev2_public_member v2_bond_backup=0.135 v2_ct_hook=0.123 v2_unused_volume=0.114
+ev2_absent_prefix v2_ha_ignored=0.126 v2_bond_backup=0.117 v2_unused_volume=0.115
+ev2_osd_mtu v2_bond_backup=0.097 v2_rep_rate=0.094 v2_md_writebehind=0.081
+ev2_osd_speed v2_bond_monitor=0.090 v2_md_reshape=0.079 v2_rep_rate=0.077
+ev2_release_skew v2_storage_content=0.069 v2_cg_io_share=0.068 v2_zfs_atime=0.068
+ev2_kernel_skew v2_ct_dns=0.102 v2_md_recover=0.093 v2_cg_io_limit=0.087
+ev2_upgrade_skip v2_cg_io_limit=0.135 v2_backup_freeze=0.130 v2_cg_io_share=0.127
+ev2_disabled_checks v2_cg_io_share=0.156 v2_cg_swap=0.146 v2_storage_format=0.124
+ev2_source_rejected v2_rep_target_id=0.124 v2_svc_condition=0.122 v2_rep_increment=0.121
+ev2_jitter v2_zfs_sync=0.110 v2_rep_rate=0.106 v2_rep_increment=0.091
+ev2_unselected v2_rep_rpo=0.180 v2_md_resync=0.159 v2_rep_rate=0.129
+ev2_reach v2_rep_rpo=0.136 v2_zfs_record=0.117 v2_rep_rate=0.108
+DOMAINS 12 HOLDOUT_SOURCES ['ceph-fixture', 'chronyc'] SOURCE_OVERLAP 0
+ABSTAIN 4 OF 12
+MAX_COSINE 0.180
+EXACT_OK 138 TRAIN_HOLDOUT_PAIRS 1200
+CONTAMINATION_OK
