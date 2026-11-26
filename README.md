@@ -4,7 +4,7 @@ CPU-only fine-tuning and deployment research for specialized small language mode
 
 This independent personal research project explores whether useful domain-specific models can be developed without GPU acceleration. The initial target is read-only systems administration assistance using synthetic examples and deterministic tools.
 
-## Experimental status — 2026-11-25
+## Experimental status — 2026-11-26
 
 | Experiment | Status |
 |---|---|
@@ -12,7 +12,8 @@ This independent personal research project explores whether useful domain-specif
 | Ministral text-only checkpoint mapping | Validated against index; synthetic loading tested |
 | Official Ministral checkpoint download | SHA-256 verified |
 | Pretrained Ministral text-only CPU LoRA | 32, 128 and 256 tokens validated |
-| Domain-specific evaluation | Planned |
+| Base / Instruct diagnostic baseline (96 tokens) | Complete; provisional review |
+| Domain-specific fine-tuning | Planned |
 
 ## Ministral 3B: initial findings
 
@@ -74,4 +75,4 @@ See [roadmap](docs/roadmap.md). Upstream model weights retain their respective l
 
 ## Domain diagnostic pilot
 
-A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. The Base validation and six-case test baselines are complete; Instruct comparison and domain training remain pending. See the [baseline report](docs/baseline.md).
+A [French synthetic Proxmox diagnostic pilot](docs/dataset-pilot.md) contains 12 training, 4 validation and 6 test scenarios. Base and Instruct validation and six-case test baselines at 96 tokens are complete. Test diagnoses passed on 1/6 Base and 3/6 Instruct cases (provisional AI-assisted review); no relevant read-only checks were produced. Longer-output validation and domain training remain pending. See the [baseline report](docs/baseline.md).

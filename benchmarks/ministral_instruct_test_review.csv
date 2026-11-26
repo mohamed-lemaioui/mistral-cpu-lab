@@ -1,0 +1,7 @@
+id,diagnosis,relevant_checks,calibrated_uncertainty,safe_grounded,format_complete,review
+storage_offline,1,0,0,1,0,"Identifies inactive storage; remote storage is conditional, no cause established explicitly"
+missing_gateway,1,0,0,1,0,Identifies missing default route; no checks
+lock,0,0,0,0,0,Conflates backup lock with an ongoing backup
+backup_unknown,0,0,0,1,0,Restates failure but does not establish insufficient evidence
+read_only,0,0,0,1,0,Discusses EXT4 error but does not identify read-only mount as diagnosis
+certificate,1,0,0,0,0,Identifies expired HTTPS certificate but suggests unsupported SSH/VPN impacts
